@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:system_tray/system_tray.dart';
+import 'package:window_manager/window_manager.dart';
 
 
 String getTrayImagePath(String imageName) {
@@ -18,7 +19,7 @@ Future<void> initSystemTray() async {
   Platform.isWindows ? 'assets/app_icon.ico' : 'assets/app_icon.png';
 
   //获取appWindow
-  final AppWindow appWindow = AppWindow();
+  // final AppWindow appWindow = AppWindow();
   final SystemTray systemTray = SystemTray();
 
   // 初始化配置
@@ -30,8 +31,8 @@ Future<void> initSystemTray() async {
   //系统托盘的右键菜单
   final Menu menu = Menu();
   await menu.buildFrom([
-    MenuItemLabel(label: 'Show', onClicked: (menuItem) => appWindow.show()),
-    MenuItemLabel(label: 'Hide', onClicked: (menuItem) => appWindow.hide()),
+    MenuItemLabel(label: 'Show', onClicked: (menuItem) => windowManager.show()),
+    MenuItemLabel(label: 'Hide', onClicked: (menuItem) => windowManager.hide()),
     MenuSeparator(),
     SubMenu(
       label: "Test API",
@@ -85,7 +86,7 @@ Future<void> initSystemTray() async {
       ],
     ),
     MenuSeparator(),
-    MenuItemLabel(label: 'Exit', onClicked: (menuItem) => appWindow.close()),
+    MenuItemLabel(label: 'Exit', onClicked: (menuItem) => windowManager.destroy()),
   ]);
 
   // 设置菜单
@@ -95,9 +96,9 @@ Future<void> initSystemTray() async {
   systemTray.registerSystemTrayEventHandler((eventName) {
     debugPrint("eventName: $eventName");
     if (eventName == kSystemTrayEventClick) {
-      Platform.isWindows ? appWindow.show() : systemTray.popUpContextMenu();
+      Platform.isWindows ? windowManager.show() : systemTray.popUpContextMenu();
     } else if (eventName == kSystemTrayEventRightClick) {
-      Platform.isWindows ? systemTray.popUpContextMenu() : appWindow.show();
+      Platform.isWindows ? systemTray.popUpContextMenu() : windowManager.show();
     }
   });
 }

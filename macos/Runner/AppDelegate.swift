@@ -4,6 +4,7 @@ import FlutterMacOS
 @NSApplicationMain
 class AppDelegate: FlutterAppDelegate {
   override func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-    return true
+    //隐藏到托盘的设置
+    return false
   }
 }
