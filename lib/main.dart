@@ -7,11 +7,15 @@ import 'package:desktop_project/tray.dart';
 import 'package:desktop_project/win_manager_listener.dart';
 import 'package:desktop_project/window_button/window_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
 
+  //热加载时取消快捷键注册
+  await hotKeyManager.unregisterAll();
   //初始化系统托盘
   await initSystemTray();
 
@@ -92,6 +96,26 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              ElevatedButton(onPressed: ()async{
+                // ⌥ + Q
+                HotKey _hotKey = HotKey(
+                  KeyCode.keyQ,
+                  modifiers: [KeyModifier.alt],
+                  // Set hotkey scope (default is HotKeyScope.system)
+                  scope: HotKeyScope.inapp, // Set as inapp-wide hotkey.
+                );
+                await hotKeyManager.register(
+                  _hotKey,
+                  keyDownHandler: (hotKey) {
+                    print('onKeyDown+${hotKey.toJson()}');
+                  },
+                  // Only works on macOS.
+                  keyUpHandler: (hotKey){
+                    print('onKeyUp+${hotKey.toJson()}');
+                  } ,
+                );
+
+              }, child: Text("注册快捷键")),
               ContextMenuArea(
                 width: 120,
                 child: Container(
@@ -114,11 +138,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: ()async{
                   await FlutterClipboard.copy("我是复制出来的");
                 },
-                child: Tooltip(
+                child: const Tooltip(
                   message: "惦记我进行复制",
                   child: Text("惦记我复制"),
                 ),
               ),
+              //会和自定义右键菜单冲突，所以配置右键菜单应该避免全局配置
+              const SelectableText("这段话是可以直接复制的"),
               ElevatedButton(onPressed: ()async{
                 await FlutterClipboard.copy("惦记我复制");
               }, child: const Text('惦记我复制')),
@@ -136,4 +162,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+
+  //正常注册快捷键应该是一进来就注册initState
+  @override
+  void dispose() async{
+    //取消注册
+    await hotKeyManager.unregisterAll();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
 }

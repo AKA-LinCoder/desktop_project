@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   contextual_menu
+  hotkey_manager
   screen_retriever
   system_tray
   window_manager
