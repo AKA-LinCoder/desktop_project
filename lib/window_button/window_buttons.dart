@@ -32,7 +32,6 @@ class _WindowButtonsState extends State<WindowButtons> {
            cursor: SystemMouseCursors.click,
            child: MinimizeWindowButton(
              colors: buttonColors,
-             onPressed: maximizeOrRestore,
            ),
          ),
         MouseRegion(
@@ -57,3 +56,4 @@ class _WindowButtonsState extends State<WindowButtons> {
     );
   }
 }
+

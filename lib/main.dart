@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:desktop_project/tray.dart';
 import 'package:desktop_project/window_button/window_buttons.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
+  //初始化系统托盘
+  await initSystemTray();
+
   runApp(const MyApp());
-  //设置窗口
+  //设置窗口大小
   doWhenWindowReady(() {
     const initialSize = Size(600, 450);
     appWindow.minSize = initialSize;
@@ -57,7 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
         toolbarHeight: 30,
         ///自定义拖拽
         title: WindowTitleBarBox(child: MoveWindow(),),
-        actions: const [WindowButtons()],
+        actions:  [
+          ///只有在window起作用，macOS不能自定义按钮，只能自定义拖拽
+          if(Platform.isWindows==true) const WindowButtons()
+        ],
       ),
       body: Center(
         child: Column(
