@@ -40,6 +40,9 @@ dependencies:
   window_manager: ^0.3.2
   #系统托盘
   system_tray: ^2.0.3
+  #右键菜单
+  contextmenu: ^3.0.0
+  contextual_menu: ^0.1.2
 
 dev_dependencies:
   flutter_test:

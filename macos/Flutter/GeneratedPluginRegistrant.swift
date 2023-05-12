@@ -5,11 +5,13 @@
 import FlutterMacOS
 import Foundation
 
+import contextual_menu
 import screen_retriever
 import system_tray
 import window_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  ContextualMenuPlugin.register(with: registry.registrar(forPlugin: "ContextualMenuPlugin"))
   ScreenRetrieverPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverPlugin"))
   SystemTrayPlugin.register(with: registry.registrar(forPlugin: "SystemTrayPlugin"))
   WindowManagerPlugin.register(with: registry.registrar(forPlugin: "WindowManagerPlugin"))
