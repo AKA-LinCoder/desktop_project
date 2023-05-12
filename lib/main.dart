@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:clipboard/clipboard.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:desktop_project/contextual_menu_utils.dart';
 import 'package:desktop_project/tray.dart';
@@ -109,6 +110,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   ];
                 },
               ),
+              InkWell(
+                onTap: ()async{
+                  await FlutterClipboard.copy("我是复制出来的");
+                },
+                child: Tooltip(
+                  message: "惦记我进行复制",
+                  child: Text("惦记我复制"),
+                ),
+              ),
+              ElevatedButton(onPressed: ()async{
+                await FlutterClipboard.copy("惦记我复制");
+              }, child: const Text('惦记我复制')),
               const Text(
                 'You have pushed the button this many times:',
               ),
