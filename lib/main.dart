@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:clipboard/clipboard.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:desktop_project/contextual_menu_utils.dart';
+import 'package:desktop_project/mode.dart';
 import 'package:desktop_project/tray.dart';
 import 'package:desktop_project/win_manager_listener.dart';
 import 'package:desktop_project/window_button/window_buttons.dart';
@@ -11,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:realm/realm.dart';
 import 'package:screen_capturer/screen_capturer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -82,6 +85,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String? base64Image;
+  late Realm realm;
+
+  @override
+  void initState() {
+    //配置连接数据库,如果修改了表里字段，则更新版本即可
+    var config = Configuration.local([People.schema],schemaVersion: 2);
+    realm = Realm(config);
+    //插入数据库
+    People p1 = People("tom", 12);
+    realm.write((){
+      realm.add(p1);
+    });
+    //读取数据
+    //全部数据
+    var res = realm.all<People>();
+    for (var element in res) {
+      print(element.name);
+    }
+    //根据条件读取数据
+    var res1 = realm.all<People>().query("name='tom'");
+    for (var element in res1) {
+      print(element.age);
+    }
+    //修改数据
+    //注意，修改的时候，没法修改条件，比如我搜索条件是名字是tom，我就不能修改名字
+    realm.write((){
+      res1[0].age = 200;
+      // //删除满足条件的所有数据
+      // realm.deleteMany(res1);
+      // //删除一条数据
+      // realm.delete(res1[0]);
+    });
+    super.initState();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return ContextualMenuArea(
@@ -107,6 +147,15 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                ElevatedButton(onPressed: ()async{
+                  final url = Uri.parse("https://www.baidu.com");
+                  if(await canLaunchUrl(url)){
+                    await launchUrl(url);
+                  }else{
+                    print("无法打开");
+                  }
+                }, child: const Text("打开网页")),
+                SizedBox(height: 40,),
                 ElevatedButton(onPressed: ()async{
                   //windows下默认就有截图权限，但是mac下必须判断权限
                   bool allowed = await ScreenCapturer.instance.isAccessAllowed();

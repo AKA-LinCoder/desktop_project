@@ -53,6 +53,12 @@ dependencies:
   screen_capturer: ^0.1.3
   #路径
   path_provider:
+  #打开网站
+  url_launcher: ^6.1.11
+  #监听网络变化
+  connectivity_plus: ^4.0.0
+  #本地数据库
+  realm:
 
 dev_dependencies:
   flutter_test:

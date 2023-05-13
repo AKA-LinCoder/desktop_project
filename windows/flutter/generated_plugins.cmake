@@ -3,12 +3,15 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus
   contextual_menu
   hotkey_manager
   local_notifier
+  realm
   screen_capturer
   screen_retriever
   system_tray
+  url_launcher_windows
   window_manager
 )
 

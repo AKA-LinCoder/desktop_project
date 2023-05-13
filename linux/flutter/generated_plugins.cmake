@@ -6,8 +6,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   contextual_menu
   hotkey_manager
   local_notifier
+  realm
   screen_retriever
   system_tray
+  url_launcher_linux
   window_manager
 )
 
