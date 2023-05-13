@@ -5,6 +5,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:desktop_project/contextual_menu_utils.dart';
 import 'package:desktop_project/mode.dart';
+import 'package:desktop_project/router/router.dart';
 import 'package:desktop_project/tray.dart';
 import 'package:desktop_project/win_manager_listener.dart';
 import 'package:desktop_project/window_button/window_buttons.dart';
@@ -63,14 +64,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: WinManagerListener(
-          child: const MyHomePage(title: 'Flutter Demo Home Page')),
+      routerConfig: router,
+      // home: WinManagerListener(
+      //     child: const MyHomePage(title: 'Flutter Demo Home Page')),
+
     );
   }
 }
