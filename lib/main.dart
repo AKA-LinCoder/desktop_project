@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:clipboard/clipboard.dart';
@@ -9,6 +10,8 @@ import 'package:desktop_project/window_button/window_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:local_notifier/local_notifier.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screen_capturer/screen_capturer.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -78,6 +81,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String? base64Image;
   @override
   Widget build(BuildContext context) {
     return ContextualMenuArea(
@@ -103,6 +107,28 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                ElevatedButton(onPressed: ()async{
+                  //windows下默认就有截图权限，但是mac下必须判断权限
+                  bool allowed = await ScreenCapturer.instance.isAccessAllowed();
+                  if(!allowed){
+                    //申请权限
+                     await ScreenCapturer.instance.requestAccess();
+                  }
+
+                  //配置图片保存路径
+                  var dir = await getApplicationDocumentsDirectory();
+                  String imageName = "Screenshot${DateTime.now().millisecondsSinceEpoch}.png";
+                  String imagePath = "${dir.path}/screen_capturer/$imageName";
+                  print(imagePath);
+                  var capuuredData = await ScreenCapturer.instance.capture(
+                    imagePath: imagePath,
+                    mode: CaptureMode.region
+                  );
+                  print("截图完成${capuuredData?.imagePath}");
+                  setState(() {
+                      base64Image = capuuredData?.base64Image;
+                  });
+                }, child: Text("截图")),
                 ElevatedButton(onPressed: (){
                   LocalNotification notic = LocalNotification(
                       title: "提示",body: "哈哈哈哈",
@@ -144,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 300,
                     height: 400,
                     color: Colors.red,
+                    child: base64Image==null?Container():Image.memory(base64Decode(base64Image!)),
                   ),
                   builder: (context) {
                     return [
